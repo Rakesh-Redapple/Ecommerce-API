@@ -21,6 +21,7 @@ mongoose.connect(DB).then(()=>{
 // routers
 
 const authRouter=require('./routes/authRoutes');
+const userRouter=require('./routes/userRoutes');
 
 app.get('/',(req,res)=>{
     res.send('Ecom api')
@@ -36,6 +37,7 @@ app.use(express.urlencoded({extended:false}));
 app.use(morgan('tiny'));
 app.use(cookieParser(process.env.JWT_SECRET));
 app.use('/api/v1/auth',authRouter);
+app.use('/api/v1/users',userRouter);
 
 app.all('*',(req,res,next)=>{
     res.status(StatusCodes.BAD_REQUEST).json({message:'page not found'});
