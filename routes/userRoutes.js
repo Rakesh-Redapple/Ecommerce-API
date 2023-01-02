@@ -10,9 +10,9 @@ const {getAllUser,
     updateUserPassword}=require('../controller/userController');
 
 router.route('/').get(authenticateUser,autharizPermission('admin','owner','user'),getAllUser);
-router.route('/showMe').get(showCurrentUser);
+router.route('/showMe').get(authenticateUser,showCurrentUser);
 router.route('/updateUser').patch(updateUser)
-router.route('/updateUserPassword').patch(updateUserPassword);
+router.route('/updateUserPassword').patch(authenticateUser,updateUserPassword);
 router.route('/:id').get(authenticateUser,getSingleUser);
 
 

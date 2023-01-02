@@ -3,7 +3,7 @@ const {StatusCodes}=require('http-status-codes');
 // const jwt= require('jsonwebtoken');
 
 // const {createJWT}=require('../utils');
-const {attachCookiesToResponse}=require('../utils');
+const {attachCookiesToResponse,createTokenUser}=require('../utils');
 
 const register=async(req,res)=>{
 
@@ -27,7 +27,8 @@ const register=async(req,res)=>{
             role:req.body.role
         })
 // jwt functionality commented because of used in utils folder
-         const userToken={name:user.name,userId:user._id,role:user.role};
+        //  const userToken={name:user.name,userId:user._id,role:user.role};
+        const userToken=createTokenUser(user);
         //  const token= createJWT({payload:userToken});
 
          // now going to save  token in cookies
