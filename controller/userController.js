@@ -2,6 +2,7 @@ const User=require('../models/User');
 const{StatusCodes}=require('http-status-codes');
 const getAllUser=async(req,res)=>{
     try{
+        console.log(req.user);
         const user=await User.find({role:'admin'}).select('-__V,password').select('-password');
         if(!user){
             return res.status(StatusCodes.NOT_FOUND);
