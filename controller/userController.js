@@ -1,5 +1,6 @@
 const User=require('../models/User');
 const{StatusCodes}=require('http-status-codes');
+const {createTokenUser,attachCookiesToResponse,checkPermission}= require('../utils');
 const getAllUser=async(req,res)=>{
     try{
         console.log(req.user);
@@ -19,6 +20,7 @@ const getSingleUser=async(req,res)=>{
         if(!user){
             return res.status(404).json({message:`user not found by id:${req.params.id}`});
         }
+        checkPermission(req.user,user._id);
         res.status(StatusCodes.OK).json({user});
     }catch(error){
         console.log(error);
@@ -30,7 +32,18 @@ const showCurrentUser=async(req,res)=>{
 }
 
 const updateUser=async(req,res)=>{
-    res.send('update-user');
+    try{
+        const {email,name}=req.body;
+        if(!email || !name){
+            return res.status(401).json({message:'invalid creditionals'});
+        }
+        const user= await User.findOneAndUpdate({_id:req.user.userId},{email,name},{new:true,runValidators:true});
+        const tokenUser=createTokenUser(user);
+        attachCookiesToResponse({res,user:tokenUser});
+        res.status(StatusCodes.OK).json({user:tokenUser});
+    }catch(error){
+        console.log(error);
+    }
 }
 
 const updateUserPassword=async(req,res)=>{
@@ -51,3 +64,8 @@ const updateUserPassword=async(req,res)=>{
 
 
 module.exports={getAllUser,getSingleUser,showCurrentUser,updateUser,updateUserPassword}
+
+
+
+
+
