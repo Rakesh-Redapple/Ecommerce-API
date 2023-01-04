@@ -1,6 +1,7 @@
 
 const Product=require('../models/Product');
 const {StatusCodes}=require('http-status-codes');
+const path=require('path');
 
 
 const createProduct= async(req,res)=>{
@@ -14,19 +15,71 @@ const createProduct= async(req,res)=>{
 }
 
 const getAllProduct= async(req,res)=>{
-    res.send('getAllProduct');
+    try{
+        const products= await Product.find({});
+        res.status(StatusCodes.OK).json({products,count:products.length});
+    }catch(error){
+        console.log(error);
+    }
 }
 const getSingleProduct= async(req,res)=>{
-    res.send('get single product');
+    try{
+        const {id:productId}=req.params;
+        const products= await Product.findOne({_id:productId});
+        if(!products){
+            return res.send(`not product found with ID:${productId}`);
+        }
+        res.status(StatusCodes.OK).json({products});
+    }catch(error){
+        console.log(error);
+    }
 }
 const updateProduct= async(req,res)=>{
-    res.send('update product');
+    try{
+        const {id:productId}=req.params;
+        const products= await Product.findOneAndUpdate({_id:productId},req.body,{new:true,runValidators:true});
+        if(!products){
+            return res.send(`not product found with ID:${productId}`);
+        }
+        res.status(StatusCodes.OK).json({products});
+    }catch(error){
+        console.log(error);
+    }
 }
+
 const deleteProduct= async(req,res)=>{
-    res.send('delete  product');
+    try{
+        const {id:productId}=req.params;
+        const products= await Product.findOne({_id:productId});
+        if(!products){
+            return res.send(`not product found with ID:${productId}`);
+        }
+        await products.remove();
+        res.status(StatusCodes.OK).json({message:'product delete successfully!'});
+    }catch(error){
+        console.log(error);
+    }
 }
 const uploadImage= async(req,res)=>{
-    res.send('upload product product');
+    try{
+        if(!req.files){
+            return res.status(StatusCodes.BAD_REQUEST).json({message:'file field is empty'});
+        }
+        const productImage=req.files.image;
+        if(!productImage.mimetype.startsWith('image')){
+            return res.status(StatusCodes.BAD_REQUEST).json({message:'please upload image'});
+        }
+        const maxSize=1024*1024;
+        if(productImage.size>maxSize){
+            return res.status(StatusCodes.BAD_REQUEST).json({message:'please upload image file smaller than 1MB'});
+        }
+        const imagePath=path.join(__dirname,'../public/uploads/'+ `${productImage.name}`);
+        await productImage.mv(imagePath)
+res.status(StatusCodes.OK).json({image:`/uploads/${productImage.name}`});
+    }catch(error){
+        console.log(error);
+    }
+    
 }
 
 
