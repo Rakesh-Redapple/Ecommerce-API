@@ -28,9 +28,9 @@ const productRouter=require('./routes/productRoute');
 const reviewRouter=require('./routes/reviewRoute');
 const orderRouter=require('./routes/orderRoute');
 
-app.get('/',(req,res)=>{
-    res.send('Ecom api')
-})
+// app.get('/',(req,res)=>{
+//     res.send('Ecom api')
+// })
 app.get('/api/v1',(req,res)=>{
     console.log(req.signedCookies);
     res.send('ecommmerce api outcome');
