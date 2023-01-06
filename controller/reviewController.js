@@ -27,6 +27,9 @@ const createReview= async(req,res)=>{
 
 const getAllReview= async(req,res)=>{
     try{
+        // populate method is used for getting ref schema fields in current documents
+       // const review= await Review.find({}).populate({path:'product',select:'name company price'});
+      // const review= await Review.find({}).populate({path:'product',select:'name company price'});
         const review= await Review.find({});
         res.status(StatusCodes.OK).json({review,count:review.length});
     }catch(err){
